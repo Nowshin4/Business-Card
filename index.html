@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Transparent Card — Premium Business Cards</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  :root{
+    --bg:#07120f;
+    --glass: rgba(255,255,255,0.05);
+    --card:#0b231f;
+    --green:#14B37D; /* primary green */
+    --lemon:#F7FF66; /* lemon accent */
+    --muted:rgba(255,255,255,0.7);
+    --glass-2: rgba(255,255,255,0.03);
+    --glass-strong: rgba(255,255,255,0.08);
+    --radius:16px;
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  /* Premium font for headings (simulate with heavy weight) */
+  h1,h2,h3 { font-family: "Ovo", Georgia, serif; letter-spacing:0.6px; }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background: radial-gradient(1200px 600px at 10% 20%, rgba(20,179,125,0.06), transparent),
+                radial-gradient(900px 400px at 90% 80%, rgba(247,255,102,0.04), transparent),
+                linear-gradient(180deg,#03120e 0%, #07120f 50%, #02120f 100%);
+    color:var(--muted);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+  }
+
+  /* Moving gradient background stripe */
+  .bg-animate{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background: linear-gradient(90deg, rgba(20,179,125,0.08), rgba(247,255,102,0.06), rgba(20,179,125,0.08));
+    filter:blur(60px);
+    transform:translateX(-30%);
+    animation: slide 18s linear infinite;
+    opacity:0.8;
+  }
+  @keyframes slide{0%{transform:translateX(-30%)}50%{transform:translateX(30%)}100%{transform:translateX(-30%)}}
+
+  header{
+    position:relative; z-index:5;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 28px;
+    backdrop-filter: blur(8px);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-bottom:1px solid rgba(255,255,255,0.03);
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:54px;height:54px;border-radius:12px;background:linear-gradient(135deg,var(--green),var(--lemon));
+    box-shadow:0 6px 20px rgba(20,179,125,0.12), inset 0 -6px 18px rgba(0,0,0,0.18);
+    display:flex;align-items:center;justify-content:center;color:#072118;font-weight:800;font-size:20px;
+  }
+  nav a{color:var(--muted); text-decoration:none; margin:0 12px; font-weight:600; font-size:15px; opacity:0.95}
+  nav a:hover{color:var(--lemon); transform:translateY(-2px)}
+
+  .hero{
+    position:relative; z-index:2; padding:80px 6vw 60px; display:flex; gap:40px; align-items:center; justify-content:space-between;
+    max-width:1200px;margin:0 auto;
+  }
+  .hero-left{max-width:640px}
+  .kicker{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--glass),transparent); color:var(--lemon); font-weight:700;margin-bottom:18px; border:1px solid rgba(255,255,255,0.03)}
+  h1{font-size:48px; margin:0 0 12px; color:white; line-height:1.02}
+  p.lead{color:rgba(255,255,255,0.78); font-size:18px; margin-bottom:22px}
+  .cta-row{display:flex;gap:12px; align-items:center}
+  .btn{
+    padding:14px 20px; border-radius:12px; border:0; cursor:pointer; font-weight:700; letter-spacing:0.3px;
+    transition:transform .25s ease, box-shadow .25s ease;
+    box-shadow:0 8px 28px rgba(0,0,0,0.55);
+  }
+  .btn-primary{background:linear-gradient(90deg,var(--green),#1ecf93); color:#022017}
+  .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted)}
+
+  .hero-right{width:520px; display:flex; justify-content:center; align-items:center; position:relative}
+  .card-preview{
+    width:420px; height:260px; border-radius:20px; padding:18px; background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(2,20,16,0.65);
+    transform:translateY(0);
+    transition:transform .65s cubic-bezier(.2,.9,.25,1);
+    display:flex; gap:12px; align-items:center;
+    backdrop-filter: blur(8px);
+  }
+  .card-preview:hover{transform:translateY(-12px) rotate(-1deg)}
+  .pc-left{flex:1}
+  .pc-right{width:140px; height:200px; border-radius:12px; overflow:hidden}
+  img.mock{width:100%; height:100%; object-fit:cover; display:block}
+
+  /* features */
+  .features{display:flex; gap:18px; margin-top:28px; flex-wrap:wrap}
+  .feature{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:16px;border-radius:14px; min-width:200px; display:flex; gap:12px; align-items:center; border:1px solid rgba(255,255,255,0.03)}
+  .feature .icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(180deg,var(--green),rgba(20,179,125,0.6)); display:flex;align-items:center;justify-content:center;font-weight:800;color:#032118}
+
+  footer{
+    margin-top:60px; padding:28px; display:flex; justify-content:space-between; align-items:center; gap:8px;
+    border-top:1px solid rgba(255,255,255,0.03); position:relative; z-index:5; backdrop-filter: blur(6px);
+  }
+
+  /* small screens */
+  @media (max-width:900px){
+    .hero{flex-direction:column-reverse; gap:28px; padding:48px 5vw}
+    .hero-right{width:100%}
+    .card-preview{width:92%}
+    nav{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="bg-animate" aria-hidden="true"></div>
+
+<header>
+  <div class="brand">
+    <div class="logo">TC</div>
+    <div>
+      <div style="font-weight:800;color:white">Transparent Card</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.45)">Premium transparent business cards</div>
+    </div>
+  </div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="templates.html">Templates</a>
+    <a href="customize.html">Customize</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="cart.html" style="margin-left:18px;color:var(--lemon)">Cart (<span id="cartCount">0</span>)</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-left">
+      <div class="kicker">Transparent • Premium • Eco</div>
+      <h1>Luxury transparent business cards — make your first impression unforgettable</h1>
+      <p class="lead">Crystal-clear materials, subtle foils, and premium finishes. Choose formats, orientation, and quantities — preview in real time and customize on our live canvas.</p>
+      <div class="cta-row">
+        <button class="btn btn-primary" onclick="location.href='shop.html'">Shop Cards</button>
+        <button class="btn btn-ghost" onclick="location.href='customize.html'">Customize Now</button>
+      </div>
+
+      <div class="features" aria-hidden="true">
+        <div class="feature"><div class="icon">G</div><div><strong>Glass-look</strong><div style="font-size:13px;color:rgba(255,255,255,0.65)">True transparency effect.</div></div></div>
+        <div class="feature"><div class="icon">F</div><div><strong>Foil Options</strong><div style="font-size:13px;color:rgba(255,255,255,0.65)">Gold & Silver options.</div></div></div>
+        <div class="feature"><div class="icon">Q</div><div><strong>Fast Prints</strong><div style="font-size:13px;color:rgba(255,255,255,0.65)">Quantities starting at 50.</div></div></div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="card-preview" aria-hidden="true">
+        <div class="pc-left">
+          <div style="font-weight:800;color:var(--lemon);font-size:18px">Nowshin Tabassum</div>
+          <div style="color:rgba(255,255,255,0.7)">Web Developer • Chittagong</div>
+          <div style="margin-top:12px;color:rgba(255,255,255,0.6);font-size:13px">Transparent + Gold Foil • American • 500 qty</div>
+        </div>
+        <div class="pc-right">
+          <img class="mock" src="https://images.unsplash.com/photo-1581092795367-0b91a0ae0b0d?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=6e4c139b2c1b1c6a2a91d9e6f23b6f9b" alt="card mock">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="max-width:1200px;margin:48px auto;padding:0 6vw">
+    <h2 style="color:white;margin-bottom:16px">Featured products</h2>
+    <div id="featured" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:18px"></div>
+  </section>
+
+  <section style="max-width:1200px;margin:40px auto;padding:0 6vw">
+    <h2 style="color:white;margin-bottom:12px">Why Transparent Cards?</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr; gap:16px">
+      <div style="background:var(--glass-2); padding:18px;border-radius:12px; border:1px solid rgba(255,255,255,0.03)">
+        <h3 style="margin:0 0 8px;color:var(--green)">Stand out visually</h3>
+        <p style="margin:0;color:rgba(255,255,255,0.7)">The transparency adds depth and modern aesthetic unmatched by paper cards.</p>
+      </div>
+      <div style="background:var(--glass-2); padding:18px;border-radius:12px; border:1px solid rgba(255,255,255,0.03)">
+        <h3 style="margin:0 0 8px;color:var(--green)">Premium finishes</h3>
+        <p style="margin:0;color:rgba(255,255,255,0.7)">Foil accents and custom cutting make each card feel expensive.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div style="font-weight:800;color:white">Transparent Card</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.55)">© <span id="year"></span> All rights reserved</div>
+  </div>
+  <div style="display:flex; gap:14px; align-items:center">
+    <a href="faq.html">FAQ</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+
+<script>
+/* Shared product seed (used across pages) */
+const PRODUCT_DATA = [
+  {id:'T1', title:'Transparent', desc:'Classic transparent card', img:'https://images.unsplash.com/photo-1600859348744-08a5b3f7ee24?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=4f7f2d6b6f0f1a5c7e2efb3b3c45b2f3'},
+  {id:'T2', title:'Transparent + Gold Foil', desc:'Elegant gold foil accents', img:'https://images.unsplash.com/photo-1555952517-2e8e729e8bce?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3a9b6f7a2d1d2e7a8b9c2d3e4f5a6b7c'},
+  {id:'T3', title:'Transparent + Silver Foil', desc:'Subtle silver foil finish', img:'https://images.unsplash.com/photo-1531346716976-2e4c6a8b6f2a?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2b6e1f3c4b5a6d7e8f9a0b1c2d3e4f5a'},
+  {id:'T4', title:'Transparent + Gold & Silver Foil', desc:'Dual foil luxury', img:'https://images.unsplash.com/photo-1616628182186-1f3e84c4f5a3?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d'}
+];
+
+/* simple cart utilities */
+function getCart(){ try{ return JSON.parse(localStorage.getItem('tc_cart')||'[]') }catch(e){return[]}}
+function setCart(cart){ localStorage.setItem('tc_cart', JSON.stringify(cart)); updateCartCount(); }
+function updateCartCount(){ const c = getCart(); document.getElementById('cartCount').textContent = c.reduce((s,i)=>s+i.qty,0) }
+function addToCart(id,opts){ const cart = getCart(); const key = id + '|' + opts.format + '|' + opts.orientation + '|' + opts.finish + '|' + opts.qty; const existing = cart.find(i=>i.key===key); if(existing){ existing.qty += 1; } else { cart.push({key, id, opts, qty:1, price:priceFor(id,opts)});} setCart(cart); }
+
+/* pricing: base price by product id and options */
+function priceFor(id, opts){
+  const baseMap={T1:55, T2:72, T3:70, T4:95}; // base for 50 qty American
+  let base = baseMap[id] || 60;
+  const formatMult = (opts.format==='European')?1.06:(opts.format==='Square')?1.1:(opts.format==='Small')?0.9:1;
+  const orientationMult = (opts.orientation==='Portrait')?1:1;
+  const finishMult = (opts.finish.includes('Gold') && opts.finish.includes('Silver'))?1.45: (opts.finish.includes('Gold')||opts.finish.includes('Silver'))?1.25:1;
+  const qty = Number(opts.qty);
+  let qtyMult = 1;
+  if(qty===50) qtyMult=1;
+  if(qty===500) qtyMult=7.8;
+  if(qty===1000) qtyMult=14.5;
+  const price = Math.round(base * formatMult * orientationMult * finishMult * qtyMult);
+  return price;
+}
+
+/* render featured */
+(function(){
+  const wrap = document.getElementById('featured');
+  PRODUCT_DATA.forEach(p=>{
+    const card = document.createElement('div');
+    card.style.cssText = 'background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.03); display:flex; gap:12px; align-items:center;';
+    card.innerHTML = `
+      <div style="width:110px;height:80px;border-radius:10px;overflow:hidden;flex-shrink:0"><img src="${p.img}" style="width:100%;height:100%;object-fit:cover"></div>
+      <div style="flex:1">
+        <div style="font-weight:800;color:white">${p.title}</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.65);margin:6px 0">${p.desc}</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <a href="product.html?id=${p.id}" class="btn btn-ghost" style="padding:8px 12px">View</a>
+          <button class="btn btn-primary" onclick="location.href='customize.html?pref=${p.id}'" style="padding:8px 12px">Customize</button>
+        </div>
+      </div>
+    `;
+    wrap.appendChild(card);
+  });
+})();
+
+/* initialize cart count and year */
+document.getElementById('year').textContent = new Date().getFullYear();
+updateCartCount();
+</script>
+</body>
+</html>

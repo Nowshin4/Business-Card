@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Checkout — Transparent Card</title>
+<style>
+:root{--bg:#07120f;--green:#14B37D;--lemon:#F7FF66;color:rgba(255,255,255,0.9);font-family:Inter,Arial}
+body{margin:0;background:linear-gradient(180deg,#02120f,#07120f);min-height:100vh}
+.header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.container{max-width:1000px;margin:22px auto;padding:0 6vw}
+.form{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+.input,select{width:100%;padding:10px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);margin-bottom:10px}
+.btn{padding:12px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--green),#1ecf93);color:#032118;font-weight:800;cursor:pointer}
+.side{width:320px;margin-left:20px}
+.summary{padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+@media (max-width:900px){ .container{padding:0 4vw} .layout{flex-direction:column} .side{width:100%;margin-left:0} }
+</style>
+</head>
+<body>
+<header class="header"><div style="display:flex;gap:12px;align-items:center"><div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(90deg,var(--green),var(--lemon));display:flex;align-items:center;justify-content:center;font-weight:800">TC</div><div><strong>Checkout</strong><div style="font-size:12px;color:rgba(255,255,255,0.6)">Secure payment</div></div></div><nav><a href="cart.html">Back to cart</a></nav></header>
+
+<main class="container">
+  <div class="layout" style="display:flex;gap:20px">
+    <div style="flex:1" class="form">
+      <h2 style="margin-top:0">Billing & shipping</h2>
+      <form id="checkoutForm">
+        <input id="fullName" class="input" placeholder="Full name" required>
+        <input id="email" class="input" placeholder="Email" type="email" required>
+        <input id="address" class="input" placeholder="Address" required>
+        <div style="display:flex; gap:8px">
+          <input id="city" class="input" placeholder="City" required style="flex:1">
+          <input id="postal" class="input" placeholder="Postal code" required style="width:160px">
+        </div>
+
+        <h3 style="margin:12px 0 8px">Payment</h3>
+        <input id="cardName" class="input" placeholder="Name on card" required>
+        <input id="cardNum" class="input" placeholder="Card number (test: 4242 4242 4242 4242)" required>
+        <div style="display:flex; gap:8px">
+          <input id="exp" class="input" placeholder="MM/YY" required style="width:120px">
+          <input id="cvc" class="input" placeholder="CVC" required style="width:120px">
+        </div>
+
+        <div style="margin-top:12px">
+          <button class="btn" type="submit">Pay now</button>
+        </div>
+      </form>
+      <div id="msg" style="margin-top:12px"></div>
+    </div>
+
+    <aside class="side">
+      <div class="summary">
+        <div style="font-weight:800">Order summary</div>
+        <div id="summaryItems" style="margin-top:8px"></div>
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,0.04);margin:10px 0">
+        <div style="display:flex;justify-content:space-between"><div>Subtotal</div><div id="sub">$0</div></div>
+        <div style="display:flex;justify-content:space-between"><div>Tax</div><div id="ta">$0</div></div>
+        <div style="display:flex;justify-content:space-between;font-weight:800;margin-top:8px"><div>Total</div><div id="to">$0</div></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer style="margin-top:22px;padding:18px;border-top:1px solid rgba(255,255,255,0.03)"><div>© <span id="year"></span> Transparent Card</div></footer>
+
+<script>
+function getCart(){ try{return JSON.parse(localStorage.getItem('tc_cart')||'[]')}catch(e){return[]}}
+function clearCart(){ localStorage.removeItem('tc_cart') }
+
+function renderSummary(){
+  const items = getCart(); const list = document.getElementById('summaryItems'); list.innerHTML='';
+  if(items.length===0){ list.innerHTML='<div>No items in cart</div>'; return; }
+  items.forEach(it=>{
+    const div = document.createElement('div'); div.style.display='flex'; div.style.justifyContent='space-between';
+    div.style.marginBottom='8px'; div.innerHTML = `<div>${it.id==='CUSTOM'?'Custom design':it.id} x${it.qty}</div><div>$${(it.price*it.qty).toLocaleString()}</div>`;
+    list.appendChild(div);
+  });
+  const sub = items.reduce((s,i)=>s+i.price*i.qty,0);
+  const tax = Math.round(sub*0.07); const tot = sub+tax;
+  document.getElementById('sub').textContent = '$'+sub.toLocaleString();
+  document.getElementById('ta').textContent = '$'+tax.toLocaleString();
+  document.getElementById('to').textContent = '$'+tot.toLocaleString();
+}
+renderSummary();
+
+document.getElementById('checkoutForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  // basic validation
+  const name = document.getElementById('fullName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const card = document.getElementById('cardNum').value.replace(/\s/g,'');
+  if(!name||!email||card.length<12){ document.getElementById('msg').textContent='Please fill form correctly'; return; }
+  // simulate payment
+  document.getElementById('msg').textContent = 'Processing payment...';
+  setTimeout(()=>{
+    clearCart();
+    document.getElementById('msg').textContent = 'Payment successful! Order confirmed. A receipt has been sent to ' + email;
+    renderSummary();
+  }, 1200);
+});
+
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Templates — Transparent Card</title>
+<style>
+:root{--bg:#07120f;--green:#14B37D;--lemon:#F7FF66;color:rgba(255,255,255,0.9);font-family:Inter,Arial}
+body{margin:0;background:linear-gradient(180deg,#02120f,#07120f);min-height:100vh}
+.header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.container{max-width:1200px;margin:22px auto;padding:0 6vw}
+.grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:18px}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03); transition:transform .2s}
+.card:hover{transform:translateY(-8px)}
+.thumb{width:100%;height:160px;object-fit:cover;border-radius:8px}
+.meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.btn{padding:10px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--green),#1ecf93);color:#032118;font-weight:800;cursor:pointer}
+</style>
+</head>
+<body>
+<header class="header">
+  <div style="display:flex;gap:12px;align-items:center"><div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(90deg,var(--green),var(--lemon));display:flex;align-items:center;justify-content:center;font-weight:800">TC</div><div><strong>Templates</strong><div style="font-size:12px;color:rgba(255,255,255,0.6)">Start with a template</div></div></div>
+  <nav><a href="customize.html">Open Editor</a> • <a href="shop.html">Shop</a></nav>
+</header>
+
+<main class="container">
+  <h1 style="margin-top:6px">Template Gallery</h1>
+  <p style="color:rgba(255,255,255,0.7)">Select a template to load into the customizer.</p>
+
+  <div class="grid" id="templatesGrid"></div>
+</main>
+
+<footer style="margin-top:20px;padding:18px;border-top:1px solid rgba(255,255,255,0.03);display:flex;justify-content:space-between">
+  <div>© <span id="year"></span> Transparent Card</div>
+  <div><a href="contact.html">Contact</a> • <a href="faq.html">FAQ</a></div>
+</footer>
+
+<script>
+const TEMPLATES = [
+  {id:'tpl1', title:'Minimal Name', img:'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=1200'},
+  {id:'tpl2', title:'Bold Logo', img:'https://images.unsplash.com/photo-1520975919832-5d2294a9d5a0?q=80&w=1200'},
+  {id:'tpl3', title:'Photo Accent', img:'https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=1200'},
+  {id:'tpl4', title:'Monogram', img:'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1200'}
+];
+
+const grid = document.getElementById('templatesGrid');
+TEMPLATES.forEach(t=>{
+  const d = document.createElement('div'); d.className='card';
+  d.innerHTML = `<img src="${t.img}" class="thumb" alt="${t.title}"><div style="margin-top:8px"><div style="font-weight:800">${t.title}</div><div style="color:rgba(255,255,255,0.6);font-size:13px">Editable template</div></div><div class="meta"><button class="btn" onclick="useTemplate('${t.id}')">Use template</button><a href="product.html?id=T1" style="color:rgba(255,255,255,0.6);text-decoration:none">Preview</a></div>`;
+  grid.appendChild(d);
+});
+
+function useTemplate(id){
+  // pass selection to customizer via query param and open it
+  location.href = 'customize.html?template=' + id;
+}
+
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
