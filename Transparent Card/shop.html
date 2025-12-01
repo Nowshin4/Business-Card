@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Shop — Transparent Card</title>
+<style>
+:root{
+  --bg:#07120f; --green:#14B37D; --lemon:#F7FF66; --muted:rgba(255,255,255,0.85);
+  --glass:rgba(255,255,255,0.03); --radius:14px;
+  font-family:Inter, Arial, sans-serif;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; color:var(--muted);
+  background: linear-gradient(180deg,#02120f 0%, #07120f 100%);
+  -webkit-font-smoothing:antialiased;
+}
+.header{
+  display:flex; align-items:center; justify-content:space-between; padding:18px 28px; border-bottom:1px solid rgba(255,255,255,0.03);
+  backdrop-filter: blur(8px);
+}
+.brand{display:flex;align-items:center; gap:12px}
+.brand .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(90deg,var(--green),var(--lemon)); display:flex;align-items:center;justify-content:center;color:#03120f;font-weight:800}
+nav a{color:var(--muted); text-decoration:none; margin-left:12px}
+.container{max-width:1200px;margin:28px auto;padding:0 6vw}
+.controls{display:flex; gap:12px; align-items:center; margin-bottom:18px; flex-wrap:wrap}
+.input, select{padding:10px 12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);outline:none}
+.grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:18px}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03); transition:transform .2s ease, box-shadow .2s ease}
+.card:hover{transform:translateY(-8px); box-shadow:0 20px 40px rgba(0,0,0,0.6)}
+.card img{width:100%; height:150px; object-fit:cover; border-radius:8px}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);font-weight:700;color:var(--lemon); margin-bottom:8px}
+.filter-bar{display:flex; gap:8px; align-items:center}
+.footer{margin-top:40px;padding:26px;border-top:1px solid rgba(255,255,255,0.03); display:flex; justify-content:space-between; align-items:center}
+@media (max-width:720px){ .controls{flex-direction:column; align-items:stretch} }
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="brand"><div class="logo">TC</div><div><div style="font-weight:800">Transparent Card</div><div style="font-size:12px;color:rgba(255,255,255,0.6)">Shop</div></div></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="templates.html">Templates</a>
+    <a href="customize.html">Customize</a>
+    <a href="cart.html" style="margin-left:14px;color:var(--lemon)">Cart (<span id="cartCount">0</span>)</a>
+  </nav>
+</header>
+
+<main class="container">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px">
+    <h1 style="margin:0">Shop Cards</h1>
+    <div style="font-size:14px;color:rgba(255,255,255,0.65)">Free proofs & expert support</div>
+  </div>
+
+  <div class="controls">
+    <div class="filter-bar">
+      <select id="filterFinish" class="input">
+        <option value="all">All finishes</option>
+        <option value="Transparent">Transparent</option>
+        <option value="Gold">Gold Foil</option>
+        <option value="Silver">Silver Foil</option>
+        <option value="Dual">Gold & Silver</option>
+      </select>
+      <select id="filterFormat" class="input">
+        <option value="all">All formats</option>
+        <option>American</option><option>European</option><option>Square</option><option>Small</option>
+      </select>
+    </div>
+
+    <div style="margin-left:auto; display:flex; gap:10px">
+      <input id="search" placeholder="Search products" class="input" />
+      <button class="input" onclick="resetFilters()">Reset</button>
+    </div>
+  </div>
+
+  <div class="grid" id="productGrid" aria-live="polite"></div>
+
+  <div style="margin-top:24px; display:flex; gap:12px; align-items:center">
+    <button onclick="location.href='customize.html'" style="padding:12px 16px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--green),#1ecf93);font-weight:700;cursor:pointer">Customize</button>
+    <button onclick="location.href='templates.html'" style="padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted);cursor:pointer">Browse Templates</button>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div>© <span id="year"></span> Transparent Card</div>
+  <div><a href="faq.html">FAQ</a> &nbsp; <a href="contact.html">Contact</a></div>
+</footer>
+
+<script>
+const PRODUCTS = [
+  {id:'T1', title:'Transparent', finish:'Transparent', img:'https://images.unsplash.com/photo-1600859348744-08a5b3f7ee24?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=4f7f2d6b6f0f1a5c7e2efb3b3c45b2f3', priceBase:55},
+  {id:'T2', title:'Transparent + Gold Foil', finish:'Gold', img:'https://images.unsplash.com/photo-1555952517-2e8e729e8bce?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3a9b6f7a2d1d2e7a8b9c2d3e4f5a6b7c', priceBase:72},
+  {id:'T3', title:'Transparent + Silver Foil', finish:'Silver', img:'https://images.unsplash.com/photo-1531346716976-2e4c6a8b6f2a?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2b6e1f3c4b5a6d7e8f9a0b1c2d3e4f5a', priceBase:70},
+  {id:'T4', title:'Transparent + Gold & Silver Foil', finish:'Dual', img:'https://images.unsplash.com/photo-1616628182186-1f3e84c4f5a3?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d', priceBase:95}
+];
+
+function renderGrid(list){
+  const wrap = document.getElementById('productGrid');
+  wrap.innerHTML='';
+  list.forEach(p=>{
+    const div = document.createElement('div');
+    div.className='card';
+    div.innerHTML = `
+      <img src="${p.img}" alt="${p.title}">
+      <div style="margin-top:10px;font-weight:800;color:white">${p.title}</div>
+      <div style="color:rgba(255,255,255,0.6);font-size:13px;margin:8px 0">${p.finish}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-weight:800">${formatCurrency(p.priceBase)}<span style="font-size:12px;color:rgba(255,255,255,0.55)"> (from)</span></div>
+        <div>
+          <a class="btn" href="product.html?id=${p.id}" style="padding:8px 10px;background:transparent;border-radius:10px;border:1px solid rgba(255,255,255,0.04;color:var(--muted);text-decoration:none;color:var(--muted);">View</a>
+          <button onclick="location.href='customize.html?pref=${p.id}'" style="padding:8px 10px;margin-left:8px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--green),#1ecf93);color:#032118;font-weight:700">Customize</button>
+        </div>
+      </div>
+    `;
+    wrap.appendChild(div);
+  });
+}
+
+function formatCurrency(n){ return '$'+Number(n).toLocaleString() }
+
+function applyFilters(){
+  const finish = document.getElementById('filterFinish').value;
+  const formatVal = document.getElementById('filterFormat').value;
+  const q = document.getElementById('search').value.toLowerCase();
+  let list = PRODUCTS.filter(p=>{
+    if(finish!=='all' && ((finish==='Transparent' && p.finish!=='Transparent') || (finish==='Gold' && p.finish!=='Gold') || (finish==='Silver' && p.finish!=='Silver') || (finish==='Dual' && p.finish!=='Dual'))) return false;
+    if(q && !p.title.toLowerCase().includes(q) && !p.finish.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  renderGrid(list);
+}
+
+function resetFilters(){ document.getElementById('filterFinish').value='all'; document.getElementById('search').value=''; applyFilters(); }
+
+document.getElementById('filterFinish').addEventListener('change', applyFilters);
+document.getElementById('filterFormat').addEventListener('change', applyFilters);
+document.getElementById('search').addEventListener('input', applyFilters);
+
+/* cart helpers */
+function getCart(){ try{ return JSON.parse(localStorage.getItem('tc_cart')||'[]')}catch(e){return[]}}
+function updateCartCount(){ document.getElementById('cartCount').textContent = getCart().reduce((s,i)=>s+i.qty,0) }
+
+renderGrid(PRODUCTS);
+updateCartCount();
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

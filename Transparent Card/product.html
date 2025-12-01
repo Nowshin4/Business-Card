@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Product — Transparent Card</title>
+<style>
+:root{--bg:#07120f;--green:#14B37D;--lemon:#F7FF66;color:rgba(255,255,255,0.9);font-family:Inter,Arial}
+body{margin:0;background:linear-gradient(180deg,#02120f,#07120f);min-height:100vh;color:var(--muted)}
+.header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.container{max-width:1100px;margin:28px auto;padding:0 6vw}
+.grid{display:grid;grid-template-columns: 1fr 360px; gap:18px}
+.preview{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:18px;border-radius:12px; border:1px solid rgba(255,255,255,0.03)}
+.thumb{width:100%; height:420px; object-fit:cover; border-radius:10px}
+.opts{display:flex;flex-direction:column; gap:10px}
+select,input[type=radio]{padding:10px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+.price{font-weight:900;color:var(--lemon);font-size:22px}
+.btn{padding:12px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--green),#1ecf93);color:#032118;font-weight:800;cursor:pointer}
+.footer{margin-top:40px;padding:18px;border-top:1px solid rgba(255,255,255,0.03)}
+@media (max-width:880px){ .grid{grid-template-columns:1fr; } .thumb{height:300px} }
+</style>
+</head>
+<body>
+<header class="header">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(90deg,var(--green),var(--lemon));display:flex;align-items:center;justify-content:center;font-weight:800">TC</div>
+    <div><div style="font-weight:800">Transparent Card</div><div style="font-size:12px;color:rgba(255,255,255,0.6)">Product</div></div>
+  </div>
+  <nav>
+    <a href="shop.html">Back to shop</a>
+    <a href="cart.html" style="margin-left:12px;color:var(--lemon)">Cart (<span id="cartCount">0</span>)</a>
+  </nav>
+</header>
+
+<main class="container">
+  <div class="grid">
+    <div class="preview" id="previewWrap">
+      <img id="mainImg" class="thumb" src="" alt="product image">
+      <div style="display:flex; gap:12px; margin-top:12px; flex-wrap:wrap">
+        <div style="min-width:120px">
+          <div style="font-weight:800" id="prodTitle"></div>
+          <div style="color:rgba(255,255,255,0.65);font-size:13px;margin-top:6px" id="prodDesc"></div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="preview">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:700">Customize options</div>
+        <div class="price" id="price">$0</div>
+      </div>
+
+      <div style="margin-top:12px" class="opts">
+        <label>Format
+          <select id="format">
+            <option>American</option><option>European</option><option>Square</option><option>Small</option>
+          </select>
+        </label>
+        <label>Orientation
+          <select id="orientation"><option>Landscape</option><option>Portrait</option></select>
+        </label>
+        <label>Finish
+          <select id="finish"><option>Transparent</option><option>Gold Foil</option><option>Silver Foil</option><option>Gold & Silver Foil</option></select>
+        </label>
+        <label>Quantity
+          <select id="qty"><option>50</option><option>500</option><option>1000</option></select>
+        </label>
+
+        <div style="display:flex; gap:8px">
+          <button class="btn" id="addToCart">Add to cart</button>
+          <button class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)" onclick="location.href='customize.html'">Open Customizer</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <section style="margin-top:20px; background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.03)">
+    <h3 style="margin:0 0 8px">Details</h3>
+    <p style="margin:0;color:rgba(255,255,255,0.65)">High-quality clear plastic with precise foil accents. Durable, water-resistant, and visually striking.</p>
+  </section>
+</main>
+
+<footer class="footer">
+  <div>© <span id="year"></span> Transparent Card</div>
+  <div><a href="contact.html">Need help?</a></div>
+</footer>
+
+<script>
+/* Reuse price logic */
+function priceFor(id, opts){
+  const baseMap={T1:55, T2:72, T3:70, T4:95};
+  let base = baseMap[id] || 60;
+  const formatMult = (opts.format==='European')?1.06:(opts.format==='Square')?1.1:(opts.format==='Small')?0.9:1;
+  const finish = opts.finish;
+  const finishMult = (finish.includes('Gold') && finish.includes('Silver'))?1.45: (finish.includes('Gold')||finish.includes('Silver'))?1.25:1;
+  const qty = Number(opts.qty);
+  let qtyMult = 1;
+  if(qty===50) qtyMult=1;
+  if(qty===500) qtyMult=7.8;
+  if(qty===1000) qtyMult=14.5;
+  return Math.round(base * formatMult * finishMult * qtyMult);
+}
+
+function getCart(){try{return JSON.parse(localStorage.getItem('tc_cart')||'[]')}catch(e){return[]}}
+function setCart(c){localStorage.setItem('tc_cart', JSON.stringify(c)); updateCartCount();}
+function updateCartCount(){document.getElementById('cartCount').textContent = getCart().reduce((s,i)=>s+i.qty,0)}
+
+const DATA = {
+  T1:{id:'T1',title:'Transparent',desc:'Classic transparent card',img:'https://images.unsplash.com/photo-1600859348744-08a5b3f7ee24?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=4f7f2d6b6f0f1a5c7e2efb3b3c45b2f3'},
+  T2:{id:'T2',title:'Transparent + Gold Foil',desc:'Elegant gold foil accents',img:'https://images.unsplash.com/photo-1555952517-2e8e729e8bce?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3a9b6f7a2d1d2e7a8b9c2d3e4f5a6b7c'},
+  T3:{id:'T3',title:'Transparent + Silver Foil',desc:'Subtle silver foil finish',img:'https://images.unsplash.com/photo-1531346716976-2e4c6a8b6f2a?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2b6e1f3c4b5a6d7e8f9a0b1c2d3e4f5a'},
+  T4:{id:'T4',title:'Transparent + Gold & Silver Foil',desc:'Dual foil luxury',img:'https://images.unsplash.com/photo-1616628182186-1f3e84c4f5a3?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d'}
+};
+
+function getIdFromURL(){const p=new URLSearchParams(location.search);return p.get('id')||'T1'}
+let productId = getIdFromURL();
+const prod = DATA[productId];
+document.getElementById('mainImg').src = prod.img;
+document.getElementById('prodTitle').textContent = prod.title;
+document.getElementById('prodDesc').textContent = prod.desc;
+
+const selectors = ['format','orientation','finish','qty'];
+function getOpts(){ const o={}; selectors.forEach(s=>o[s]=document.getElementById(s).value); return o }
+
+function updatePrice(){
+  const opts = getOpts();
+  const p = priceFor(productId, opts);
+  document.getElementById('price').textContent = '$'+p.toLocaleString();
+}
+
+selectors.forEach(s=>document.getElementById(s).addEventListener('change', updatePrice));
+updatePrice();
+
+document.getElementById('addToCart').addEventListener('click', ()=>{
+  const opts = getOpts();
+  const key = productId + '|' + opts.format + '|' + opts.orientation + '|' + opts.finish + '|' + opts.qty;
+  const cart = getCart();
+  const existing = cart.find(i=>i.key===key);
+  const price = priceFor(productId, opts);
+  if(existing){ existing.qty += 1 } else { cart.push({key, id:productId, opts, qty:1, price}); }
+  setCart(cart);
+  alert('Added to cart');
+});
+
+updateCartCount();
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
